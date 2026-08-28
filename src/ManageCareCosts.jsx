@@ -525,41 +525,6 @@ function ManageCareCosts() {
             </div>
           </div>
 
-          {/* Provider Directory Search Section */}
-          <div
-            style={{
-              borderTop: "2px dashed #eee",
-              marginTop: "20px",
-              paddingTop: "15px",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "14px",
-                fontWeight: "bold",
-                color: "#111",
-                display: "block",
-                marginBottom: "10px",
-              }}
-            >
-              Find covered providers & drugs
-            </span>
-            <button
-              style={{
-                background: "#e0e8ff",
-                color: "#0f62fe",
-                border: "1px solid #bfdbfe",
-                padding: "6px 12px",
-                borderRadius: "20px",
-                fontSize: "12px",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              Add doctors & facilities
-            </button>
-          </div>
-
           {/* Premium Direct Link Web Integration Button */}
           <div
             style={{

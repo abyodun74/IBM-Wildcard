@@ -87,6 +87,7 @@ const TABS = [
   { id: "learn", label: "Learn", icon: BookOpen },
 ];
 
+
 // ---------- Mock data (replace with real APIs — see notes at bottom of chat) ----------
 const PROVIDERS = [
   {
@@ -1652,6 +1653,63 @@ function NoInsuranceTab({ t }) {
         and government coverage — wherever you are in the US.
       </p>
 
+      {/* ── No Insurance Support Banner ── */}
+      <div
+        className="ni-fadein ni-d2"
+        style={{
+          background: t.accentBg,
+          border: `1px solid ${t.accent}30`,
+          borderRadius: 14,
+          padding: "20px 24px",
+          marginBottom: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            width: 52,
+            height: 52,
+            minWidth: 52,
+            borderRadius: "50%",
+            background: t.bg,
+            color: t.accent,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 26,
+            fontWeight: 700,
+          }}
+        >
+          ♡
+        </div>
+
+        <div>
+          <div
+            style={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: t.ink,
+              marginBottom: 5,
+            }}
+          >
+            You have options — and you’re not alone.
+          </div>
+          <div
+            style={{
+              fontSize: 13.5,
+              lineHeight: 1.6,
+              color: t.sub,
+            }}
+          >
+            Healthcare can feel overwhelming — especially without insurance.
+            These resources can help you get care and reduce costs.
+          </div>
+        </div>
+      </div>
+
       {/* ── National stats banner ── */}
       <div
         className="ni-fadein ni-d2"
@@ -2440,79 +2498,8 @@ function NoInsuranceTab({ t }) {
         )}
       </div>
 
-      {/* ── Resource cards grid ── */}
-      <div
-        style={{
-          fontSize: 12,
-          fontWeight: 700,
-          color: t.sub,
-          marginBottom: 10,
-          textTransform: "uppercase",
-          letterSpacing: "0.04em",
-        }}
-      >
-        Where to get care &amp; financial help
-        {locationHeading && (
-          <span
-            style={{
-              fontWeight: 400,
-              textTransform: "none",
-              marginLeft: 6,
-              color: t.teal,
-            }}
-          >
-            — {locationHeading}
-          </span>
-        )}
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: 12,
-          marginBottom: 20,
-        }}
-      >
-        {cards.map((c, i) => (
-          <div
-            key={c.title}
-            className={`ni-card ni-fadein ni-d${Math.min(i, 11)}`}
-            style={{
-              background: t.amberBg,
-              borderRadius: 12,
-              padding: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              border: `1px solid ${t.border}`,
-            }}
-          >
-            <div style={{ fontWeight: 700, fontSize: 13.5, color: t.amber }}>
-              {c.title}
-            </div>
-            <div
-              style={{ fontSize: 12, color: t.sub, lineHeight: 1.6, flex: 1 }}
-            >
-              {c.body}
-            </div>
-            <a
-              href={c.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ni-link"
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: t.amber,
-                textDecoration: "none",
-                marginTop: 2,
-              }}
-            >
-              {c.linkLabel}
-            </a>
-          </div>
-        ))}
-      </div>
+
+      {/* Financial-help resource cards moved to Manage Costs. */}
 
       {/* ── Florida hospital accordion ── */}
       <div

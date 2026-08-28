@@ -927,288 +927,362 @@ function ManageCareCosts() {
         </div>
       </div>
       {/* 🤝 SECTION 4: FINANCIAL ASSISTANCE SUPPORT */}
-      <div
-        style={{
-          background: "#f4f4f4",
-          padding: "20px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-          marginTop: "25px",
-        }}
-      >
-        <h2
-          style={{ margin: "0 0 15px 0", fontSize: "20px", color: "#0f62fe" }}
+<div
+  style={{
+    marginTop: "25px",
+  }}
+>
+  <h2
+    style={{
+      margin: "0 0 6px 0",
+      fontSize: "20px",
+      color: "#0f62fe",
+    }}
+  >
+    🤝 Financial Assistance Support
+  </h2>
+
+  <p
+    style={{
+      fontSize: "14px",
+      color: "#555",
+      marginBottom: "18px",
+    }}
+  >
+    Explore programs that can help reduce medical bills, premiums,
+    deductibles, and other healthcare costs.
+  </p>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+      gap: "18px",
+    }}
+  >
+    {/* Hospital Financial Assistance */}
+    <div
+      style={{
+        background: "#FAEEDA",
+        border: "1px solid #e6d2ad",
+        borderRadius: "18px",
+        padding: "28px 24px",
+        textAlign: "center",
+        minHeight: "250px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            fontSize: "20px",
+            color: "#854F0B",
+            marginBottom: "18px",
+          }}
         >
-          🤝 Financial Assistance Support
-        </h2>
+          Hospital Financial Assistance
+        </h3>
+
         <p
           style={{
-            fontSize: "14px",
-            color: "#555",
-            marginTop: "-10px",
-            marginBottom: "15px",
+            fontSize: "16px",
+            lineHeight: "1.6",
+            color: "#666",
           }}
         >
-          Explore active non-profit relief foundations, temporary employment
-          coverage continuations, and state-funded medical support networks:
+          Many nonprofit hospitals offer charity care or discounted care
+          based on income. You may be able to apply before or after receiving
+          treatment.
         </p>
-
-        {/* 1. National Medical Bill & Debt Relief (Dollar For) */}
-        <div
-          style={{
-            background: "white",
-            border: "1px solid #e0e0e0",
-            borderRadius: "6px",
-            padding: "15px",
-            marginBottom: "15px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
-            <div>
-              <strong
-                style={{ fontSize: "15px", color: "#111", display: "block" }}
-              >
-                National Medical Bill & Debt Relief
-              </strong>
-              <span
-                style={{ fontSize: "12px", color: "#666", fontWeight: "bold" }}
-              >
-                Source: Dollar For
-              </span>
-              <p
-                style={{
-                  margin: "6px 0 0 0",
-                  fontSize: "13px",
-                  color: "#444",
-                  lineHeight: "1.4",
-                }}
-              >
-                A dedicated non-profit organisation that helps patients check
-                their eligibility for hidden hospital charity care programs and
-                guides them through the application to get medical debt
-                completely forgiven or crushed.
-              </p>
-            </div>
-            <a
-              href="https://dollarfor.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                background: "#e0e8ff",
-                color: "#0f62fe",
-                border: "1px solid #bfdbfe",
-                padding: "6px 12px",
-                borderRadius: "4px",
-                fontSize: "12px",
-                fontWeight: "bold",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Check Eligibility ↗
-            </a>
-          </div>
-        </div>
-
-        {/* 2. Co-pay, Premium, & Deductible Aid (HealthWell Foundation) */}
-        <div
-          style={{
-            background: "white",
-            border: "1px solid #e0e0e0",
-            borderRadius: "6px",
-            padding: "15px",
-            marginBottom: "15px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
-            <div>
-              <strong
-                style={{ fontSize: "15px", color: "#111", display: "block" }}
-              >
-                Co-pay, Premium, & Deductible Aid
-              </strong>
-              <span
-                style={{ fontSize: "12px", color: "#666", fontWeight: "bold" }}
-              >
-                Source: HealthWell Foundation
-              </span>
-              <p
-                style={{
-                  margin: "6px 0 0 0",
-                  fontSize: "13px",
-                  color: "#444",
-                  lineHeight: "1.4",
-                }}
-              >
-                An independent non-profit foundation that steps in when health
-                insurance isn't enough, directly assisting with medication
-                co-pays, premiums, and out-of-pocket thresholds.
-              </p>
-            </div>
-            <a
-              href="https://healthwellfoundation.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                background: "#e0e8ff",
-                color: "#0f62fe",
-                border: "1px solid #bfdbfe",
-                padding: "6px 12px",
-                borderRadius: "4px",
-                fontSize: "12px",
-                fontWeight: "bold",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Apply For Aid ↗
-            </a>
-          </div>
-        </div>
-
-        {/* 3. State Health Insurance Support (Medicaid & CHIP) */}
-        <div
-          style={{
-            background: "white",
-            border: "1px solid #e0e0e0",
-            borderRadius: "6px",
-            padding: "15px",
-            marginBottom: "15px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
-            <div>
-              <strong
-                style={{ fontSize: "15px", color: "#111", display: "block" }}
-              >
-                State Health Insurance Support
-              </strong>
-              <span
-                style={{ fontSize: "12px", color: "#666", fontWeight: "bold" }}
-              >
-                Source: Medicaid & CHIP National Directives
-              </span>
-              <p
-                style={{
-                  margin: "6px 0 0 0",
-                  fontSize: "13px",
-                  color: "#444",
-                  lineHeight: "1.4",
-                }}
-              >
-                Helps users quickly navigate state-specific portals to apply for
-                medical assistance, low-income coverage, and state-funded
-                children's insurance safety nets.
-              </p>
-            </div>
-            <a
-              href="https://medicaid.gov"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                background: "#e0e8ff",
-                color: "#0f62fe",
-                border: "1px solid #bfdbfe",
-                padding: "6px 12px",
-                borderRadius: "4px",
-                fontSize: "12px",
-                fontWeight: "bold",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Find State Portal ↗
-            </a>
-          </div>
-        </div>
-
-        {/* 4. Temporary Insurance Continuation (COBRA) */}
-        <div
-          style={{
-            background: "white",
-            border: "1px solid #e0e0e0",
-            borderRadius: "6px",
-            padding: "15px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
-            <div>
-              <strong
-                style={{ fontSize: "15px", color: "#111", display: "block" }}
-              >
-                Temporary Insurance Continuation
-              </strong>
-              <span
-                style={{ fontSize: "12px", color: "#666", fontWeight: "bold" }}
-              >
-                Source: USA.gov COBRA Continuation
-              </span>
-              <p
-                style={{
-                  margin: "6px 0 0 0",
-                  fontSize: "13px",
-                  color: "#444",
-                  lineHeight: "1.4",
-                }}
-              >
-                Provides official federal instruction on how workers can legally
-                keep their temporary group employer health coverage active
-                following qualifying job changes or hour reductions.
-              </p>
-            </div>
-            <a
-              href="https://usa.gov"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                background: "#e0e8ff",
-                color: "#0f62fe",
-                border: "1px solid #bfdbfe",
-                padding: "6px 12px",
-                borderRadius: "4px",
-                fontSize: "12px",
-                fontWeight: "bold",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              View COBRA Rules ↗
-            </a>
-          </div>
-        </div>
       </div>
+
+      <a
+        href="https://www.usa.gov/help-with-medical-bills"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#854F0B",
+          fontWeight: "700",
+          fontSize: "16px",
+          textDecoration: "none",
+          marginTop: "22px",
+        }}
+      >
+        Find assistance programs →
+      </a>
+    </div>
+
+    {/* Dollar For */}
+    <div
+      style={{
+        background: "#FAEEDA",
+        border: "1px solid #e6d2ad",
+        borderRadius: "18px",
+        padding: "28px 24px",
+        textAlign: "center",
+        minHeight: "250px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            fontSize: "20px",
+            color: "#854F0B",
+            marginBottom: "18px",
+          }}
+        >
+          Dollar For — Medical Bill Aid
+        </h3>
+
+        <p
+          style={{
+            fontSize: "16px",
+            lineHeight: "1.6",
+            color: "#666",
+          }}
+        >
+          Dollar For helps patients apply for hospital charity care and may
+          help eliminate qualifying medical debt.
+        </p>
+      </div>
+
+      <a
+        href="https://dollarfor.org/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#854F0B",
+          fontWeight: "700",
+          fontSize: "16px",
+          textDecoration: "none",
+          marginTop: "22px",
+        }}
+      >
+        Get help with your bill →
+      </a>
+    </div>
+
+    {/* HealthWell Foundation */}
+    <div
+      style={{
+        background: "#FAEEDA",
+        border: "1px solid #e6d2ad",
+        borderRadius: "18px",
+        padding: "28px 24px",
+        textAlign: "center",
+        minHeight: "250px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            fontSize: "20px",
+            color: "#854F0B",
+            marginBottom: "18px",
+          }}
+        >
+          HealthWell Foundation
+        </h3>
+
+        <p
+          style={{
+            fontSize: "16px",
+            lineHeight: "1.6",
+            color: "#666",
+          }}
+        >
+          Grants may help eligible patients cover insurance premiums,
+          deductibles, co-pays, and certain treatment costs.
+        </p>
+      </div>
+
+      <a
+        href="https://www.healthwellfoundation.org/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#854F0B",
+          fontWeight: "700",
+          fontSize: "16px",
+          textDecoration: "none",
+          marginTop: "22px",
+        }}
+      >
+        See if you qualify →
+      </a>
+    </div>
+
+    {/* Medicaid / State Support */}
+    <div
+      style={{
+        background: "#FAEEDA",
+        border: "1px solid #e6d2ad",
+        borderRadius: "18px",
+        padding: "28px 24px",
+        textAlign: "center",
+        minHeight: "250px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            fontSize: "20px",
+            color: "#854F0B",
+            marginBottom: "18px",
+          }}
+        >
+          Medicaid & State Assistance
+        </h3>
+
+        <p
+          style={{
+            fontSize: "16px",
+            lineHeight: "1.6",
+            color: "#666",
+          }}
+        >
+          State programs may provide free or low-cost health coverage
+          depending on income, household size, age, and other eligibility
+          factors.
+        </p>
+      </div>
+
+      <a
+        href="https://www.medicaid.gov/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#854F0B",
+          fontWeight: "700",
+          fontSize: "16px",
+          textDecoration: "none",
+          marginTop: "22px",
+        }}
+      >
+        Check eligibility →
+      </a>
+    </div>
+
+    {/* 211 */}
+    <div
+      style={{
+        background: "#FAEEDA",
+        border: "1px solid #e6d2ad",
+        borderRadius: "18px",
+        padding: "28px 24px",
+        textAlign: "center",
+        minHeight: "250px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            fontSize: "20px",
+            color: "#854F0B",
+            marginBottom: "18px",
+          }}
+        >
+          211 — Find Local Help
+        </h3>
+
+        <p
+          style={{
+            fontSize: "16px",
+            lineHeight: "1.6",
+            color: "#666",
+          }}
+        >
+          Find local programs for healthcare assistance, prescription support,
+          mental health services, food, housing, and other community resources.
+        </p>
+      </div>
+
+      <a
+        href="https://www.211.org/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#854F0B",
+          fontWeight: "700",
+          fontSize: "16px",
+          textDecoration: "none",
+          marginTop: "22px",
+        }}
+      >
+        Find local resources →
+      </a>
+    </div>
+
+    {/* COBRA */}
+    <div
+      style={{
+        background: "#FAEEDA",
+        border: "1px solid #e6d2ad",
+        borderRadius: "18px",
+        padding: "28px 24px",
+        textAlign: "center",
+        minHeight: "250px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            fontSize: "20px",
+            color: "#854F0B",
+            marginBottom: "18px",
+          }}
+        >
+          COBRA Continuation Coverage
+        </h3>
+
+        <p
+          style={{
+            fontSize: "16px",
+            lineHeight: "1.6",
+            color: "#666",
+          }}
+        >
+          If you recently lost employer coverage, COBRA may allow you to
+          temporarily keep the same health insurance plan.
+        </p>
+      </div>
+
+      <a
+        href="https://www.dol.gov/general/topic/health-plans/cobra"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#854F0B",
+          fontWeight: "700",
+          fontSize: "16px",
+          textDecoration: "none",
+          marginTop: "22px",
+        }}
+      >
+        View COBRA rules →
+      </a>
+    </div>
+
+    </div>
+</div>
+
     </div>
   );
 }

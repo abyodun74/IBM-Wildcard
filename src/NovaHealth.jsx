@@ -614,6 +614,67 @@ function HomeTab({ t }) {
   );
 }
 
+// ─── Insurance lens animation styles ─────────────────────────────────────────
+const IL_STYLES = `
+  @keyframes il-fadein  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes il-slidein { from { opacity:0; transform:translateX(-10px);} to { opacity:1; transform:translateX(0); } }
+  @keyframes il-pop     { 0%{transform:scale(0.94);opacity:0} 60%{transform:scale(1.03)} 100%{transform:scale(1);opacity:1} }
+  @keyframes il-shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
+
+  .il-fadein  { animation: il-fadein  240ms ease-out both; }
+  .il-slidein { animation: il-slidein 200ms ease-out both; }
+  .il-pop     { animation: il-pop     260ms ease-out both; }
+
+  /* Stagger delays — up to 12 items */
+  .il-d0{animation-delay:0ms}   .il-d1{animation-delay:50ms}
+  .il-d2{animation-delay:100ms} .il-d3{animation-delay:150ms}
+  .il-d4{animation-delay:200ms} .il-d5{animation-delay:250ms}
+  .il-d6{animation-delay:300ms} .il-d7{animation-delay:350ms}
+  .il-d8{animation-delay:400ms} .il-d9{animation-delay:450ms}
+  .il-d10{animation-delay:500ms}.il-d11{animation-delay:550ms}
+
+  /* Provider cards — lift on hover */
+  .il-card {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  }
+  .il-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.10); }
+  .il-card:focus-within { outline: 3px solid; outline-offset: 3px; }
+
+  /* Filter pills + toggles */
+  .il-pill {
+    transition: background 160ms ease-out, border-color 160ms ease-out,
+                color 160ms ease-out, transform 140ms ease-out;
+  }
+  .il-pill:hover  { transform: scale(1.05); }
+  .il-pill:active { transform: scale(0.97); }
+  .il-pill:focus  { outline: 3px solid; outline-offset: 2px; }
+
+  /* Star rating buttons */
+  .il-star {
+    transition: transform 150ms ease-out;
+  }
+  .il-star:hover { transform: scale(1.3); }
+
+  /* Accordion body */
+  .il-accordion { animation: il-fadein 200ms ease-out both; }
+
+  /* Age gate card */
+  .il-agegate { animation: il-pop 300ms ease-out both; }
+
+  /* Rated confirmation pulse */
+  @keyframes il-rated { 0%{transform:scale(1)} 40%{transform:scale(1.18)} 100%{transform:scale(1)} }
+  .il-rated { animation: il-rated 300ms ease-out; }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .il-fadein,.il-slidein,.il-pop,.il-card,.il-pill,.il-star,
+    .il-accordion,.il-agegate,.il-rated {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+`;
+
 // ---------- Insurance lens tab ----------
 function InsuranceTab({ t }) {
   const [specialty, setSpecialty] = useState("All");
@@ -3536,8 +3597,77 @@ function UrgentTab({ t }) {
 }
 
 // ---------- Learn tab ----------
+// ─── Learn tab animation styles ───────────────────────────────────────────────
+const LT_STYLES = `
+  @keyframes lt-fadein  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes lt-slidein { from { opacity:0; transform:translateX(-8px);  } to { opacity:1; transform:translateX(0); } }
+  @keyframes lt-pop     { 0%{transform:scale(0.95);opacity:0} 60%{transform:scale(1.02)} 100%{transform:scale(1);opacity:1} }
+  @keyframes lt-expand  { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+  .lt-fadein  { animation: lt-fadein  220ms ease-out both; }
+  .lt-slidein { animation: lt-slidein 180ms ease-out both; }
+  .lt-pop     { animation: lt-pop     250ms ease-out both; }
+  .lt-expand  { animation: lt-expand  200ms ease-out both; }
+
+  .lt-d0{animation-delay:0ms}    .lt-d1{animation-delay:40ms}
+  .lt-d2{animation-delay:80ms}   .lt-d3{animation-delay:120ms}
+  .lt-d4{animation-delay:160ms}  .lt-d5{animation-delay:200ms}
+  .lt-d6{animation-delay:240ms}  .lt-d7{animation-delay:280ms}
+  .lt-d8{animation-delay:320ms}  .lt-d9{animation-delay:360ms}
+  .lt-d10{animation-delay:400ms} .lt-d11{animation-delay:440ms}
+
+  .lt-card {
+    transition: transform 190ms ease-out, box-shadow 190ms ease-out, border-color 190ms ease-out;
+    cursor: pointer;
+  }
+  .lt-card:hover  { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.09); }
+  .lt-card:focus  { outline: 3px solid; outline-offset: 2px; }
+
+  .lt-pill {
+    transition: background 150ms ease-out, border-color 150ms ease-out,
+                color 150ms ease-out, transform 130ms ease-out;
+    cursor: pointer;
+  }
+  .lt-pill:hover  { transform: scale(1.05); }
+  .lt-pill:active { transform: scale(0.97); }
+  .lt-pill:focus  { outline: 3px solid; outline-offset: 2px; }
+
+  .lt-step-item {
+    animation: lt-slidein 180ms ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lt-fadein,.lt-slidein,.lt-pop,.lt-expand,
+    .lt-card,.lt-pill,.lt-step-item {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+`;
+
+const LT_CAT_STYLE = {
+  "First Aid":        { bg: "coralBg",   fg: "coral",  icon: "🩹" },
+  "Prevention":       { bg: "tealBg",    fg: "teal",   icon: "🛡️" },
+  "Nutrition":        { bg: "amberBg",   fg: "amber",  icon: "🥗" },
+  "Mental Health":    { bg: "pinkBg",    fg: "pink",   icon: "🧠" },
+  "Know When to Go":  { bg: "accentBg",  fg: "accent", icon: "🚦" },
+};
+
 function LearnTab({ t }) {
-  const [open, setOpen] = useState(null);
+  const [activeCat,  setActiveCat]  = useState("All");
+  const [openIdx,    setOpenIdx]    = useState(null);
+  const [catKey,     setCatKey]     = useState(0);   // re-triggers stagger on category change
+
+  function handleCat(cat) {
+    setActiveCat(cat);
+    setOpenIdx(null);
+    setCatKey(k => k + 1);
+  }
+
+  const visible = activeCat === "All"
+    ? LEARN_GUIDES
+    : LEARN_GUIDES.filter(g => g.cat === activeCat);
+
   return (
     <div>
       <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Learn</h2>
@@ -3584,6 +3714,107 @@ function LearnTab({ t }) {
             )}
           </button>
         ))}
+        <div style={{ marginLeft: "auto", fontSize: 11, color: t.mute, alignSelf: "flex-end" }}>
+          Not a substitute for professional medical advice.
+        </div>
+      </div>
+
+      {/* Category filter pills */}
+      <div className="lt-fadein lt-d3" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }} role="group" aria-label="Filter by category">
+        {LEARN_CATS.map(cat => {
+          const active = activeCat === cat;
+          const cs = LT_CAT_STYLE[cat];
+          return (
+            <button key={cat} onClick={() => handleCat(cat)} aria-pressed={active}
+              className="lt-pill"
+              style={{
+                borderRadius: 20, padding: "6px 15px", fontSize: 12,
+                background: active ? (cs ? t[cs.bg] : t.accentBg) : t.panel,
+                color:      active ? (cs ? t[cs.fg] : t.accent)   : t.sub,
+                fontWeight: active ? 700 : 400,
+                border: `${active ? "2px" : "1px"} solid ${active ? (cs ? t[cs.fg] : t.accent) : t.border}`,
+                display: "flex", alignItems: "center", gap: 5,
+              }}>
+              {cs && <span aria-hidden="true">{cs.icon}</span>}
+              {cat}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Guide cards grid — re-keys on category change to replay stagger */}
+      <div key={`guides-${catKey}`} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+        {visible.map((g, i) => {
+          const cs  = LT_CAT_STYLE[g.cat] || { bg: "panel", fg: "sub" };
+          const isOpen = openIdx === i;
+          return (
+            <div key={g.title}
+              className={`lt-card lt-fadein lt-d${Math.min(i, 11)}`}
+              style={{
+                background: t[cs.bg], borderRadius: 14,
+                border: `${isOpen ? "2px" : "1px"} solid ${isOpen ? t[cs.fg] : t.border}`,
+                overflow: "hidden",
+              }}>
+
+              {/* Card header — tap to open/close */}
+              <button
+                onClick={() => setOpenIdx(isOpen ? null : i)}
+                aria-expanded={isOpen}
+                style={{
+                  width: "100%", background: "none", border: "none", cursor: "pointer",
+                  padding: "14px 16px", textAlign: "left",
+                  display: "flex", alignItems: "flex-start", gap: 12,
+                }}>
+                <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0 }} aria-hidden="true">{g.icon}</span>
+                <div style={{ flex: 1 }}>
+                  {/* Category badge */}
+                  <div style={{ fontSize: 10, fontWeight: 700, color: t[cs.fg], textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
+                    {g.cat}
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: 13.5, color: t.ink, marginBottom: 4 }}>{g.title}</div>
+                  <div style={{ fontSize: 12, color: t.sub, lineHeight: 1.5 }}>{g.summary}</div>
+                </div>
+                {/* Chevron — rotates when open */}
+                <span aria-hidden="true" style={{
+                  fontSize: 11, color: t.mute, flexShrink: 0, marginTop: 4,
+                  display: "inline-block",
+                  transition: "transform 200ms ease-out",
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                }}>▼</span>
+              </button>
+
+              {/* Expanded steps */}
+              {isOpen && (
+                <div className="lt-expand" style={{ padding: "0 16px 16px" }}>
+                  <ol style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8 }}>
+                    {g.steps.map((step, si) => (
+                      <li key={si}
+                        className={`lt-step-item lt-d${Math.min(si, 11)}`}
+                        style={{ fontSize: 12.5, color: t.sub, lineHeight: 1.6 }}>
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
+                  {g.tip && (
+                    <div className="lt-expand" style={{
+                      marginTop: 12, padding: "9px 12px", borderRadius: 8,
+                      background: t.bg, border: `1px solid ${t[cs.fg]}`,
+                      fontSize: 12, color: t[cs.fg], lineHeight: 1.5,
+                    }}>
+                      <strong>💡 Tip: </strong>{g.tip}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer note */}
+      <div className="lt-fadein" style={{ marginTop: 28, fontSize: 11, color: t.mute, lineHeight: 1.7, paddingTop: 10, borderTop: `1px solid ${t.border}` }}>
+        Information sourced from CDC, WHO, American Red Cross, NIH MedlinePlus, and Mayo Clinic guidelines.
+        These guides cover minor home-treatable situations only. When in doubt, use the <strong>Urgent</strong> tab or call your provider.
       </div>
     </div>
   );

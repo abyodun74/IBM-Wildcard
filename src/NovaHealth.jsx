@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Camera, MapPin, Building2, Siren, BookOpen, Sun, Moon, Eye, Star, Upload, Loader2, Mic, MicOff, Copy, Check, AlertTriangle } from "lucide-react";
+import { Send, Camera, MapPin, Building2, Siren, BookOpen, Sun, Moon, Eye, Star, Upload, Loader2, Mic, MicOff, Copy, Check, AlertTriangle, Wallet } from "lucide-react";
+import ManageCareCosts from "./ManageCareCosts";
 
 // ---------- Theme tokens ----------
 const THEMES = {
@@ -24,11 +25,12 @@ const THEMES = {
 };
 
 const TABS = [
-  { id: "home",        label: "Home",          icon: Send     },
-  { id: "insurance",   label: "Insurance lens", icon: MapPin   },
-  { id: "noinsurance", label: "No insurance",   icon: Building2},
-  { id: "urgent",      label: "Urgent",         icon: Siren    },
-  { id: "learn",       label: "Learn",          icon: BookOpen },
+  { id: "home",        label: "Home",           icon: Send     },
+  { id: "insurance",   label: "Insurance lens",  icon: MapPin   },
+  { id: "noinsurance", label: "No insurance",    icon: Building2},
+  { id: "urgent",      label: "Urgent",          icon: Siren    },
+  { id: "costs",       label: "Manage costs",    icon: Wallet   },
+  { id: "learn",       label: "Learn",           icon: BookOpen },
 ];
 
 // ---------- Insurance lens data ----------
@@ -366,6 +368,7 @@ export default function NovaHealth() {
         {tab === "insurance" && <InsuranceTab t={t} />}
         {tab === "noinsurance" && <NoInsuranceTab t={t} />}
         {tab === "urgent" && <UrgentTab t={t} />}
+        {tab === "costs"  && <ManageCareCosts t={t} />}
         {tab === "learn"  && <LearnTab  t={t} />}
       </div>
     </div>

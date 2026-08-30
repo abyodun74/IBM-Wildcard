@@ -31,20 +31,326 @@ const TABS = [
   { id: "learn",       label: "Learn",          icon: BookOpen },
 ];
 
-// ---------- Mock data (replace with real APIs — see notes at bottom of chat) ----------
-const PROVIDERS = [
-  { name: "Dr. Amara Osei", specialty: "Family medicine", distance: "0.8 mi", rating: 4.8, tags: ["Accessible", "ASL", "Phone"] },
-  { name: "Riverside Health Clinic", specialty: "Internal medicine", distance: "1.2 mi", rating: 4.5, tags: ["Accessible", "Spanish", "Yoruba"] },
-  { name: "Dr. Priya Nair", specialty: "Pediatrics", distance: "1.6 mi", rating: 4.9, tags: ["Accessible", "Hindi", "English"] },
-  { name: "Dr. Marcus Lee", specialty: "Dermatology", distance: "2.1 mi", rating: 4.6, tags: ["ASL", "English"] },
+// ---------- Insurance lens data ----------
+const IL_PROVIDERS = [
+  { name: "Dr. Amara Osei", specialty: "Family medicine", distance: "0.8 mi", rating: 4.8, years: 14, gender: "Female", nonprofit: false, verified: true,  awards: ["Top Doctor 2023"], asl: true,  phone: true,  languages: ["English","Twi"], insurance: "low",    accessibility: ["elevator","ramp"], tags: ["Accessible","ASL","Phone"] },
+  { name: "Riverside Health Clinic", specialty: "Internal medicine", distance: "1.2 mi", rating: 4.5, years: 22, gender: "Mixed",  nonprofit: true,  verified: true,  awards: [], asl: false, phone: true,  languages: ["English","Spanish","Yoruba"], insurance: "medium", accessibility: ["elevator","transportation"], tags: ["Accessible","Spanish","Yoruba"] },
+  { name: "Dr. Priya Nair", specialty: "Pediatrics", distance: "1.6 mi", rating: 4.9, years: 9,  gender: "Female", nonprofit: false, verified: true,  awards: ["Patient Choice Award"], asl: false, phone: true,  languages: ["English","Hindi"], insurance: "high",   accessibility: ["ramp"], tags: ["Accessible","Hindi"] },
+  { name: "Dr. Marcus Lee", specialty: "Dermatology", distance: "2.1 mi", rating: 4.6, years: 17, gender: "Male",   nonprofit: false, verified: false, awards: [], asl: true,  phone: false, languages: ["English"], insurance: "high",   accessibility: ["elevator"], tags: ["ASL"] },
+  { name: "City Community Clinic", specialty: "Family medicine", distance: "0.5 mi", rating: 4.3, years: 30, gender: "Mixed",  nonprofit: true,  verified: true,  awards: ["HRSA Gold Award"], asl: true,  phone: true,  languages: ["English","Spanish","Mandarin"], insurance: "low",    accessibility: ["elevator","ramp","transportation"], tags: ["Accessible","ASL","Phone","Spanish","Mandarin"] },
+  { name: "Dr. Leon Harris", specialty: "Psychiatry", distance: "2.8 mi", rating: 4.7, years: 11, gender: "Male",   nonprofit: false, verified: true,  awards: [], asl: false, phone: true,  languages: ["English","French"], insurance: "medium", accessibility: ["elevator"], tags: ["Phone","French"] },
+  { name: "Rural Health Partners", specialty: "General practice", distance: "18 mi", rating: 4.2, years: 25, gender: "Mixed",  nonprofit: true,  verified: true,  awards: [], asl: false, phone: true,  languages: ["English","Spanish"], insurance: "low",    accessibility: ["ramp","transportation"], tags: ["Rural","Phone","Spanish"] },
+  { name: "Dr. Sofia Reyes", specialty: "OB-GYN", distance: "1.9 mi", rating: 4.8, years: 13, gender: "Female", nonprofit: false, verified: true,  awards: ["Best OB 2022"], asl: false, phone: true,  languages: ["English","Spanish"], insurance: "medium", accessibility: ["elevator","ramp"], tags: ["Accessible","Spanish"] },
 ];
-const SPECIALTIES = ["All", "Family medicine", "Internal medicine", "Pediatrics", "Dermatology"];
 
-const GUIDES = [
-  { title: "Treating a rash", body: "Most rashes from irritation or mild allergic reaction clear up in a few days with gentle cleaning and avoiding the irritant. See a provider if it spreads quickly, blisters, or comes with fever." },
-  { title: "Cleaning ears safely", body: "Ears are self-cleaning — avoid cotton swabs inside the canal. A warm washcloth on the outer ear is usually enough. See a provider for pain, discharge, or hearing changes." },
-  { title: "Checklist", body: "Track your last dental cleaning, eye exam, and physical. Most guidelines suggest a dental visit every 6 months and a physical yearly, but this varies by age and health history." },
-  { title: "What's urgent", body: "Go to urgent or emergency care for chest pain, difficulty breathing, severe bleeding, sudden confusion, or a fever with stiff neck. When in doubt, it's okay to get it checked." },
+const IL_SPECIALTIES = ["All", "Family medicine", "Internal medicine", "Pediatrics", "Dermatology", "Psychiatry", "OB-GYN", "General practice"];
+
+const IL_RESOURCES = [
+  { cat: "Government",       title: "HealthCare.gov — Find a Plan",          body: "Compare ACA Marketplace plans by ZIP, income and coverage need. Subsidies available at all income levels.", link: "https://www.healthcare.gov/using-marketplace-coverage/getting-medical-care/", icon: "▲" },
+  { cat: "Government",       title: "Medicare Care Compare",                  body: "Official CMS tool to compare hospitals, nursing homes, doctors and home health agencies nationwide.", link: "https://www.medicare.gov/care-compare/", icon: "▲" },
+  { cat: "Government",       title: "UHC Health Plans by State",             body: "United Healthcare plan finder by state — see what plans are available where you live.", link: "https://www.uhcprovider.com/en/health-plans-by-state.html", icon: "▲" },
+  { cat: "Community Clinic", title: "HRSA Find a Health Center",             body: "Federally Qualified Health Centers offering sliding-scale fees — no one turned away regardless of ability to pay.", link: "https://findahealthcenter.hrsa.gov/", icon: "◆" },
+  { cat: "Community Clinic", title: "AMA Doctor Finder",                     body: "American Medical Association database of licensed US physicians — filter by specialty, location and name.", link: "https://find-doctor.ama-assn.org/", icon: "◆" },
+  { cat: "Community Clinic", title: "UHC Find a Doctor",                     body: "Search in-network doctors, specialists and facilities by location and plan type.", link: "https://www.uhc.com/find-a-doctor", icon: "◆" },
+  { cat: "Nonprofit",        title: "Covered Traveler — Medical Providers",  body: "Directory of vetted medical providers with transparent pricing across the US.", link: "https://www.coveredtraveler.com/medical-providers", icon: "●" },
+  { cat: "Nonprofit",        title: "Cigna Provider Directory",              body: "Find Cigna-contracted providers near you — primary care, specialists and behavioral health.", link: "https://www.cigna.com/", icon: "●" },
+  { cat: "Government",       title: "NIMHD Health Data Portal — Insurance",  body: "NIH data on insurance coverage gaps by race, age and sex — understand disparities in your community.", link: "https://hdpulse.nimhd.nih.gov/data-portal/healthcare/table?age=174&age_options=age_6&demo=00030&demo_options=insurance_12&healthcaretopic=040&healthcaretopic_options=healthcare_3&race=00&race_options=race_1_all&sex=0&sex_options=sex_3&statefips=00&statefips_options=area_states", icon: "▲" },
+  { cat: "Government",       title: "Census Bureau — Health Insurance Report", body: "Official 2024 US Census data on insurance coverage by demographics and state.", link: "https://www.census.gov/library/publications/2025/demo/p60-288.html", icon: "▲" },
+  { cat: "Government",       title: "CDC — Health Insurance FastStats",       body: "CDC quick-reference statistics on insurance coverage, uninsured rates and access to care.", link: "https://www.cdc.gov/nchs/fastats/health-insurance.htm", icon: "▲" },
+  { cat: "Nonprofit",        title: "KFF — Insurance Coverage by Gender",    body: "Kaiser Family Foundation data on insurance coverage disparities across genders and states.", link: "https://www.kff.org/state-category/health-coverage-uninsured/health-insurance-status-by-gender/", icon: "●" },
+  { cat: "Nonprofit",        title: "US Health Group — Get a Quote",          body: "Compare private health insurance plans and get personalised quotes by coverage level.", link: "https://www.ushealthgroup.com/get-a-quote", icon: "●" },
+  { cat: "Nonprofit",        title: "First Family Insurance",                 body: "Independent broker helping families find affordable insurance plans across the US market.", link: "https://www.firstfamilyinsurance.com/", icon: "●" },
+];
+
+// ---------- Learn tab data ----------
+const LEARN_CATS = ["All", "First Aid", "Prevention", "Nutrition", "Mental Health", "Know When to Go"];
+
+const LEARN_GUIDES = [
+  // ── First Aid ──
+  {
+    cat: "First Aid", icon: "🩹", title: "Cuts & minor wounds",
+    summary: "Clean, cover, monitor — most small cuts heal at home.",
+    steps: [
+      "Rinse the wound under cool running water for 1–2 minutes to flush debris.",
+      "Apply gentle pressure with a clean cloth for 5–10 min to stop bleeding.",
+      "Pat dry and apply a thin layer of antibiotic ointment (e.g. Neosporin).",
+      "Cover with a sterile adhesive bandage; change daily or when wet.",
+      "Watch for redness spreading beyond the wound edge, warmth, pus, or fever — those need a provider.",
+    ],
+    tip: "See a provider if the cut is deeper than ¼ inch, gaping, or from a rusty or dirty object.",
+  },
+  {
+    cat: "First Aid", icon: "🔥", title: "Minor burns (1st degree)",
+    summary: "Cool, protect, and soothe — never use ice or butter.",
+    steps: [
+      "Run cool (not cold) water over the burn for at least 10–20 minutes.",
+      "Do NOT apply ice, butter, toothpaste, or any oil — these trap heat.",
+      "Take ibuprofen or acetaminophen for pain if needed.",
+      "Cover loosely with a non-stick sterile bandage or clean cling wrap.",
+      "Keep clean and dry; apply aloe vera gel to soothe once cooled.",
+    ],
+    tip: "Go to emergency care for burns larger than 3 inches, burns on the face/hands/genitals, or any 3rd-degree burn (white or charred skin).",
+  },
+  {
+    cat: "First Aid", icon: "🦷", title: "Knocked-out tooth",
+    summary: "Act within 30 minutes — you can often save the tooth.",
+    steps: [
+      "Pick up the tooth by the crown (white part), not the root.",
+      "Rinse gently with milk or saline — do NOT scrub or use tap water.",
+      "Try to reinsert it into the socket; bite gently on a damp cloth to hold it.",
+      "If you can't reinsert, keep it moist: submerge in milk or hold between cheek and gum.",
+      "Get to a dentist or ER within 30 minutes for the best chance of saving it.",
+    ],
+    tip: "Time is critical — the sooner a dentist sees it, the higher the survival chance.",
+  },
+  {
+    cat: "First Aid", icon: "🤧", title: "Nosebleed at home",
+    summary: "Lean forward, pinch, wait — do NOT tilt back.",
+    steps: [
+      "Sit upright and lean slightly forward (leaning back causes blood to flow to throat).",
+      "Pinch the soft part of your nose shut firmly with your thumb and index finger.",
+      "Breathe through your mouth and hold for a full 10–15 minutes without peeking.",
+      "Apply a cold pack to the bridge of the nose while pinching.",
+      "Once stopped, avoid blowing your nose, bending over, or heavy activity for a few hours.",
+    ],
+    tip: "Seek care if it doesn't stop after 30 minutes, follows a head injury, or recurs frequently.",
+  },
+  {
+    cat: "First Aid", icon: "🦟", title: "Insect sting reaction",
+    summary: "Remove the stinger fast, watch for allergic signs.",
+    steps: [
+      "Scrape the stinger out sideways with a credit card edge — don't use tweezers (squeezes venom).",
+      "Wash the area with soap and water.",
+      "Apply ice wrapped in a cloth for 10 minutes on, 10 off, to reduce swelling.",
+      "Take an oral antihistamine (e.g. Benadryl) for itching and swelling.",
+      "Elevate the affected limb if possible.",
+    ],
+    tip: "Call 911 immediately if the person develops throat swelling, difficulty breathing, dizziness, or hives spreading — this is anaphylaxis.",
+  },
+  {
+    cat: "First Aid", icon: "🥵", title: "Heat exhaustion",
+    summary: "Move to shade, hydrate, cool the skin urgently.",
+    steps: [
+      "Move the person to a cool, shaded, or air-conditioned place immediately.",
+      "Loosen or remove tight, heavy clothing.",
+      "Apply cool, wet cloths to skin — especially neck, armpits, and groin.",
+      "Give cool water or a sports drink to sip slowly if they are conscious.",
+      "Fan them and continue cooling until help arrives or symptoms ease.",
+    ],
+    tip: "If confusion, loss of consciousness, or high fever (>104°F) develops — that is heat stroke. Call 911 immediately.",
+  },
+  {
+    cat: "First Aid", icon: "🤢", title: "Choking — Heimlich manoeuvre",
+    summary: "Hard abdominal thrusts can dislodge a blockage.",
+    steps: [
+      "Stand behind the person and wrap your arms around their waist.",
+      "Make a fist with one hand, thumb side in, just above the belly button.",
+      "Grasp your fist with the other hand.",
+      "Give firm, upward inward thrusts — repeat up to 5 times.",
+      "Alternate with 5 back blows between the shoulder blades if thrusts fail.",
+    ],
+    tip: "If the person becomes unconscious, lower them to the floor and call 911 — start CPR if trained.",
+  },
+
+  // ── Prevention ──
+  {
+    cat: "Prevention", icon: "🧼", title: "Handwashing that actually works",
+    summary: "20 seconds with soap and water stops most common illnesses.",
+    steps: [
+      "Wet hands with clean running water (warm or cold).",
+      "Apply soap and lather well — back of hands, between fingers, under nails.",
+      "Scrub for at least 20 seconds (hum 'Happy Birthday' twice).",
+      "Rinse thoroughly under running water.",
+      "Dry with a clean towel or air-dry; use the towel to turn off the tap.",
+    ],
+    tip: "Wash before eating, after using the bathroom, after coughing/sneezing, and after touching animals or garbage.",
+  },
+  {
+    cat: "Prevention", icon: "💧", title: "Staying hydrated",
+    summary: "Most adults need 8–10 cups of water daily — more in heat or illness.",
+    steps: [
+      "Drink a glass of water first thing every morning before coffee or food.",
+      "Carry a refillable bottle — sip consistently rather than drinking large amounts at once.",
+      "Eat water-rich foods: cucumber, watermelon, oranges, lettuce.",
+      "Check urine colour — pale yellow means well-hydrated; dark yellow means drink more.",
+      "Increase intake when exercising, in hot weather, or when sick with fever.",
+    ],
+    tip: "Caffeinated drinks count but less efficiently — for every 2 cups of coffee, add an extra cup of water.",
+  },
+  {
+    cat: "Prevention", icon: "😴", title: "Sleep hygiene basics",
+    summary: "7–9 hours of quality sleep is your immune system's best friend.",
+    steps: [
+      "Go to bed and wake at the same time every day — including weekends.",
+      "Keep the bedroom cool (65–68°F), dark, and quiet.",
+      "Avoid screens for 30–60 min before bed — blue light suppresses melatonin.",
+      "Avoid caffeine after 2 pm and heavy meals within 3 hours of sleep.",
+      "If you can't sleep after 20 minutes, get up and do something calm until drowsy.",
+    ],
+    tip: "Chronic poor sleep raises the risk of heart disease, diabetes, obesity, and mental health conditions.",
+  },
+  {
+    cat: "Prevention", icon: "🫁", title: "Prevent respiratory illness spread",
+    summary: "Simple habits stop colds, flu, and COVID-like illnesses.",
+    steps: [
+      "Cover coughs and sneezes with the inside of your elbow — not your hand.",
+      "Wear a mask in crowded enclosed spaces during high illness seasons.",
+      "Ventilate rooms: open windows when possible, avoid recirculated air.",
+      "Stay home when symptomatic — even a short absence cuts spread dramatically.",
+      "Clean high-touch surfaces (phones, door handles, light switches) with disinfectant wipes daily.",
+    ],
+    tip: "Annual flu shots and staying up to date on vaccines are the highest-impact prevention steps.",
+  },
+  {
+    cat: "Prevention", icon: "☀️", title: "Sun safety & skin care",
+    summary: "Skin cancer is the most common US cancer — and mostly preventable.",
+    steps: [
+      "Apply SPF 30+ broad-spectrum sunscreen 15 min before going outside, every day.",
+      "Reapply every 2 hours when outdoors, or after swimming/sweating.",
+      "Wear protective clothing, a wide-brimmed hat, and UV-blocking sunglasses.",
+      "Seek shade between 10am–4pm when UV rays are strongest.",
+      "Examine your skin monthly — new moles, asymmetric shapes, or colour changes need a provider.",
+    ],
+    tip: "Even on cloudy days, 80% of UV rays reach the skin — make sunscreen a daily habit year-round.",
+  },
+
+  // ── Nutrition ──
+  {
+    cat: "Nutrition", icon: "🥦", title: "Eating for immunity",
+    summary: "Specific foods measurably strengthen your immune response.",
+    steps: [
+      "Eat a rainbow: orange/red produce (bell peppers, carrots) is high in vitamin C and beta-carotene.",
+      "Include zinc-rich foods weekly: beans, nuts, seeds, whole grains, lean meat.",
+      "Add fermented foods for gut health: yoghurt, kefir, kimchi, sauerkraut.",
+      "Limit ultra-processed foods — they trigger inflammation and weaken immune cells.",
+      "Aim for 5 servings of fruits and vegetables daily — frozen counts and costs less.",
+    ],
+    tip: "Vitamin D deficiency is widespread and linked to poor immunity — ask your provider about a simple blood test.",
+  },
+  {
+    cat: "Nutrition", icon: "🩸", title: "Managing blood sugar without medication",
+    summary: "Small food and lifestyle changes have big effects on glucose.",
+    steps: [
+      "Choose whole grains over white bread/rice — they digest slower and spike blood sugar less.",
+      "Pair carbs with protein or healthy fat at every meal to slow absorption.",
+      "Eat smaller, more frequent meals rather than one or two large ones.",
+      "Walk for 10–15 minutes after meals — movement uses glucose before it accumulates.",
+      "Limit sugary drinks: one soda can raise blood sugar for 2+ hours.",
+    ],
+    tip: "If you have pre-diabetes, losing just 5–7% of body weight can reduce progression to diabetes by 58%.",
+  },
+  {
+    cat: "Nutrition", icon: "❤️", title: "Heart-healthy eating habits",
+    summary: "Most heart disease is preventable through consistent small choices.",
+    steps: [
+      "Replace saturated fats (butter, fatty meat) with unsaturated fats: olive oil, avocado, nuts.",
+      "Eat fatty fish (salmon, sardines, mackerel) twice a week for omega-3s.",
+      "Reduce sodium: cook at home, read labels, limit processed/canned foods.",
+      "Increase fibre: oats, beans, flaxseed, and apples lower LDL cholesterol.",
+      "Limit added sugar to under 25g/day for women and 36g/day for men.",
+    ],
+    tip: "The DASH and Mediterranean diets both have strong evidence behind heart health — neither requires expensive food.",
+  },
+
+  // ── Mental Health ──
+  {
+    cat: "Mental Health", icon: "🧘", title: "Breathing to calm anxiety",
+    summary: "Controlled breathing activates your parasympathetic nervous system in minutes.",
+    steps: [
+      "Try box breathing: inhale 4 counts → hold 4 → exhale 4 → hold 4. Repeat 4 cycles.",
+      "Or 4-7-8 breathing: inhale 4 → hold 7 → exhale slowly 8. Powerful for acute anxiety.",
+      "Breathe from the belly, not the chest — place a hand on your stomach to check.",
+      "Do this before a stressful event, during one, or to fall asleep.",
+      "Pair with progressive muscle relaxation: tense then release muscle groups from toes to face.",
+    ],
+    tip: "Even 2 minutes of slow breathing lowers cortisol and heart rate — it works whether or not you believe it will.",
+  },
+  {
+    cat: "Mental Health", icon: "🏃", title: "Exercise as medicine for mood",
+    summary: "30 minutes of moderate activity is clinically comparable to antidepressants for mild–moderate depression.",
+    steps: [
+      "Start with 10-minute walks — even a short walk after meals lifts mood measurably.",
+      "Choose movement you enjoy: dancing, gardening, cycling, swimming — adherence matters more than type.",
+      "Exercise outside when possible — natural light boosts serotonin additionally.",
+      "Aim for 150 min/week of moderate activity (brisk walk, cycling) or 75 min vigorous.",
+      "Consistency over intensity: 5 days of 30 min beats 1 day of 2.5 hours.",
+    ],
+    tip: "Physical activity reduces risk of depression by 35%, anxiety by 48%, and dementia by up to 30% (WHO, 2023).",
+  },
+  {
+    cat: "Mental Health", icon: "🗣️", title: "Talking about mental health",
+    summary: "Naming what you feel is the first step to managing it.",
+    steps: [
+      "Name the emotion specifically — not just 'bad' but 'anxious', 'ashamed', 'lonely'. Specificity helps.",
+      "Write it down: journaling for 15 min/day about thoughts and feelings reduces symptoms of depression.",
+      "Talk to someone safe — a trusted friend, family member, or community leader.",
+      "Use free or low-cost resources: Crisis Text Line (text HOME to 741741), NAMI Helpline 1-800-950-6264.",
+      "If cost is a barrier, FQHCs (see No Insurance tab) offer behavioural health on sliding-scale fees.",
+    ],
+    tip: "Asking for help is not weakness — untreated mental health conditions worsen physical health outcomes and vice versa.",
+  },
+  {
+    cat: "Mental Health", icon: "📵", title: "Digital detox & screen fatigue",
+    summary: "Intentional screen breaks reduce stress, improve focus, and help sleep.",
+    steps: [
+      "Set a hard stop for social media: 30 min/day maximum has measurable mood benefits.",
+      "Enable grayscale mode on your phone — colour is deliberately engaging; grey is not.",
+      "Create 'phone-free' zones: the bedroom and dinner table.",
+      "Take a 20-20-20 eye break: every 20 min, look at something 20 feet away for 20 seconds.",
+      "Replace one 30-min scroll session per day with a walk, stretch, or 5-min breathing exercise.",
+    ],
+    tip: "Teens who use social media 5+ hours/day are 3× more likely to report depression (CDC, 2023). Limits apply to adults too.",
+  },
+
+  // ── Know When to Go ──
+  {
+    cat: "Know When to Go", icon: "🚨", title: "Call 911 immediately for these",
+    summary: "Don't drive yourself — seconds matter.",
+    steps: [
+      "Chest pain, pressure, or tightening — especially with jaw, arm, or back pain.",
+      "Sudden difficulty breathing or shortness of breath at rest.",
+      "Signs of stroke: Face drooping, Arm weakness, Speech difficulty, Time to call (FAST).",
+      "Severe allergic reaction: throat swelling, hives spreading rapidly, wheezing.",
+      "Uncontrolled bleeding, unconsciousness, or seizure lasting more than 5 minutes.",
+    ],
+    tip: "When in doubt, call 911 — it is always better to be evaluated and sent home than to wait on a life-threatening emergency.",
+  },
+  {
+    cat: "Know When to Go", icon: "🏥", title: "Urgent care vs. ER — which to choose",
+    summary: "Urgent care is faster and cheaper for non-life-threatening issues.",
+    steps: [
+      "Urgent care: minor cuts needing stitches, UTIs, ear infections, sprains, mild fever, rashes.",
+      "ER: chest pain, head injury, severe abdominal pain, broken bones, high fever in infants, strokes.",
+      "Telehealth: prescription refills, mild colds, mental health check-ins, minor skin concerns.",
+      "Primary care (next-day): ongoing conditions, routine prescriptions, annual physicals.",
+      "Nurse hotlines (free): many insurers offer 24/7 nurse lines — check your plan.",
+    ],
+    tip: "Going to the ER for an urgent-care issue can cost 5–10× more. Use the No Insurance tab to find FQHCs that offer both walk-in and urgent care.",
+  },
+  {
+    cat: "Know When to Go", icon: "🌡️", title: "Fever: when to treat and when to worry",
+    summary: "Most fevers are your immune system working — but some need urgent attention.",
+    steps: [
+      "Adults: fever under 103°F — rest, fluids, acetaminophen or ibuprofen as directed.",
+      "Adults: fever 103°F+ lasting more than 2 days or with stiff neck, rash, confusion → ER.",
+      "Children under 3 months: any fever over 100.4°F → go to the ER immediately.",
+      "Children 3 months–3 years: fever over 102.2°F lasting more than 2 days → provider.",
+      "Never give aspirin to children — Reye's syndrome risk. Use children's acetaminophen or ibuprofen.",
+    ],
+    tip: "Fever itself isn't dangerous below 104°F in adults — but dehydration from fever is. Keep fluids going.",
+  },
+  {
+    cat: "Know When to Go", icon: "📋", title: "Annual health checklist by age",
+    summary: "Preventive screenings catch problems before they become expensive emergencies.",
+    steps: [
+      "All adults annually: blood pressure, weight/BMI, dental cleaning, vision check.",
+      "Adults 18–39: STI screening if sexually active, mental health screen, skin check.",
+      "Adults 40–64: cholesterol panel, blood glucose/diabetes screening, colorectal cancer screen (45+), mammogram (women 40+).",
+      "Adults 65+: bone density scan, annual flu shot, pneumonia vaccine, hearing and vision.",
+      "All ages: keep vaccinations current — flu annually, COVID boosters per CDC guidance, Tdap every 10 years.",
+    ],
+    tip: "Many FQHCs and community clinics provide all these screenings on a sliding scale — see the No Insurance tab.",
+  },
 ];
 
 export default function NovaHealth() {
@@ -370,37 +676,462 @@ function HomeTab({ t }) {
   );
 }
 
+// ─── Insurance lens animation styles ─────────────────────────────────────────
+const IL_STYLES = `
+  @keyframes il-fadein  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes il-slidein { from { opacity:0; transform:translateX(-10px);} to { opacity:1; transform:translateX(0); } }
+  @keyframes il-pop     { 0%{transform:scale(0.94);opacity:0} 60%{transform:scale(1.03)} 100%{transform:scale(1);opacity:1} }
+  @keyframes il-shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
+
+  .il-fadein  { animation: il-fadein  240ms ease-out both; }
+  .il-slidein { animation: il-slidein 200ms ease-out both; }
+  .il-pop     { animation: il-pop     260ms ease-out both; }
+
+  /* Stagger delays — up to 12 items */
+  .il-d0{animation-delay:0ms}   .il-d1{animation-delay:50ms}
+  .il-d2{animation-delay:100ms} .il-d3{animation-delay:150ms}
+  .il-d4{animation-delay:200ms} .il-d5{animation-delay:250ms}
+  .il-d6{animation-delay:300ms} .il-d7{animation-delay:350ms}
+  .il-d8{animation-delay:400ms} .il-d9{animation-delay:450ms}
+  .il-d10{animation-delay:500ms}.il-d11{animation-delay:550ms}
+
+  /* Provider cards — lift on hover */
+  .il-card {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  }
+  .il-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.10); }
+  .il-card:focus-within { outline: 3px solid; outline-offset: 3px; }
+
+  /* Filter pills + toggles */
+  .il-pill {
+    transition: background 160ms ease-out, border-color 160ms ease-out,
+                color 160ms ease-out, transform 140ms ease-out;
+  }
+  .il-pill:hover  { transform: scale(1.05); }
+  .il-pill:active { transform: scale(0.97); }
+  .il-pill:focus  { outline: 3px solid; outline-offset: 2px; }
+
+  /* Star rating buttons */
+  .il-star {
+    transition: transform 150ms ease-out;
+  }
+  .il-star:hover { transform: scale(1.3); }
+
+  /* Accordion body */
+  .il-accordion { animation: il-fadein 200ms ease-out both; }
+
+  /* Age gate card */
+  .il-agegate { animation: il-pop 300ms ease-out both; }
+
+  /* Rated confirmation pulse */
+  @keyframes il-rated { 0%{transform:scale(1)} 40%{transform:scale(1.18)} 100%{transform:scale(1)} }
+  .il-rated { animation: il-rated 300ms ease-out; }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .il-fadein,.il-slidein,.il-pop,.il-card,.il-pill,.il-star,
+    .il-accordion,.il-agegate,.il-rated {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+`;
+
 // ---------- Insurance lens tab ----------
 function InsuranceTab({ t }) {
-  const [specialty, setSpecialty] = useState("All");
-  const filtered = PROVIDERS.filter((p) => specialty === "All" || p.specialty === specialty);
+  // Age gate
+  const [ageConfirmed, setAgeConfirmed] = useState(null); // null | true | false
+
+  // Filters
+  const [zip,          setZip]          = useState("");
+  const [zipError,     setZipError]     = useState(false);
+  const [cityType,     setCityType]     = useState("all");    // all | downtown | rural
+  const [specialty,    setSpecialty]    = useState("All");
+  const [diversity,    setDiversity]    = useState("all");
+  const [gender,       setGender]       = useState("all");
+  const [language,     setLanguage]     = useState("all");
+  const [insurance,    setInsurance]    = useState("all");    // all | low | medium | high
+  const [aslOnly,      setAslOnly]      = useState(false);
+  const [phoneOnly,    setPhoneOnly]    = useState(false);
+  const [elevator,     setElevator]     = useState(false);
+  const [ramp,         setRamp]         = useState(false);
+  const [transport,    setTransport]    = useState(false);
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [nonprofit,    setNonprofit]    = useState(false);
+  const [ratings,      setRatings]      = useState({});       // providerId -> 1-5
+  const [showResources, setShowResources] = useState(false);
+  const [resCat,       setResCat]       = useState("All");
+  const [filterKey,    setFilterKey]    = useState(0);        // bumped to re-trigger card stagger
+  const [ratedName,    setRatedName]    = useState("");       // triggers rated pulse
+
+  // ── Age gate screen ──
+  if (ageConfirmed === null) {
+    return (
+      <>
+        <style>{IL_STYLES}</style>
+        <div className="il-agegate" style={{ maxWidth: 460, margin: "60px auto", textAlign: "center" }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>🛡️</div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 10 }}>Insurance Lens</h2>
+          <p style={{ fontSize: 14, color: t.sub, lineHeight: 1.7, marginBottom: 28 }}>
+            This section contains health insurance and provider information intended for adults.<br />
+            Are you 18 or older?
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <button onClick={() => setAgeConfirmed(true)}
+              className="il-pill"
+              style={{ padding: "11px 32px", borderRadius: 10, background: t.accent, color: "#fff", border: "none", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+              Yes, I'm 18+
+            </button>
+            <button onClick={() => setAgeConfirmed(false)}
+              className="il-pill"
+              style={{ padding: "11px 32px", borderRadius: 10, background: t.panel, color: t.sub, border: `1px solid ${t.border}`, fontSize: 14, cursor: "pointer" }}>
+              No, I'm under 18
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // ── Under-18 redirect ──
+  if (ageConfirmed === false) {
+    return (
+      <>
+        <style>{IL_STYLES}</style>
+        <div className="il-agegate" style={{ maxWidth: 460, margin: "60px auto", textAlign: "center" }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>👋</div>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10 }}>Resources for you</h2>
+          <p style={{ fontSize: 13, color: t.sub, lineHeight: 1.7, marginBottom: 20 }}>
+            If you're under 18, CHIP and Medicaid cover most children at no or low cost.<br />
+            Check the <strong>No Insurance</strong> tab for the Children (0–18) age group — it has the right resources for you.
+          </p>
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+            <a href="https://www.healthcare.gov/medicaid-chip/childrens-health-insurance-program/" target="_blank" rel="noopener noreferrer"
+              className="il-pill"
+              style={{ padding: "10px 22px", borderRadius: 10, background: t.tealBg, color: t.teal, border: `1px solid ${t.teal}`, fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+              CHIP — Children's Insurance →
+            </a>
+            <button onClick={() => setAgeConfirmed(null)}
+              className="il-pill"
+              style={{ padding: "10px 22px", borderRadius: 10, background: "none", border: `1px solid ${t.border}`, color: t.sub, fontSize: 13, cursor: "pointer" }}>
+              Back
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // ── Filter logic ──
+  function handleZip(e) {
+    const v = e.target.value.replace(/\D/g, "").slice(0, 5);
+    setZip(v);
+    setZipError(v.length > 0 && v.length < 5);
+  }
+
+  function applyFilter(setter, value) {
+    setter(value);
+    setFilterKey(k => k + 1);
+  }
+
+  const filtered = IL_PROVIDERS.filter(p => {
+    if (specialty !== "All" && p.specialty !== specialty) return false;
+    if (insurance !== "all" && p.insurance !== insurance) return false;
+    if (gender !== "all" && p.gender !== gender && p.gender !== "Mixed") return false;
+    if (language !== "all" && !p.languages.includes(language)) return false;
+    if (aslOnly && !p.asl) return false;
+    if (phoneOnly && !p.phone) return false;
+    if (elevator && !p.accessibility.includes("elevator")) return false;
+    if (ramp && !p.accessibility.includes("ramp")) return false;
+    if (transport && !p.accessibility.includes("transportation")) return false;
+    if (verifiedOnly && !p.verified) return false;
+    if (nonprofit && !p.nonprofit) return false;
+    if (cityType === "rural" && !p.tags.includes("Rural")) return false;
+    if (cityType === "downtown" && p.tags.includes("Rural")) return false;
+    return true;
+  });
+
+  const resCats = ["All", "Government", "Community Clinic", "Nonprofit"];
+  const filteredRes = IL_RESOURCES.filter(r => resCat === "All" || r.cat === resCat);
+
+  const resCatStyle = {
+    "Government":       { bg: "tealBg",   fg: "teal" },
+    "Community Clinic": { bg: "accentBg", fg: "accent" },
+    "Nonprofit":        { bg: "amberBg",  fg: "amber" },
+  };
+
+  const pill = (label, active, onClick) => (
+    <button key={label} onClick={onClick} aria-pressed={active}
+      className="il-pill"
+      style={{
+        borderRadius: 16, padding: "5px 13px", fontSize: 12, cursor: "pointer",
+        background: active ? t.accentBg : t.panel,
+        color: active ? t.accent : t.sub,
+        fontWeight: active ? 700 : 400,
+        border: `${active ? "2px" : "1px"} solid ${active ? t.accent : t.border}`,
+      }}>{label}</button>
+  );
+
+  const toggle = (label, value, setValue, icon) => (
+    <button key={label} onClick={() => { setValue(v => !v); setFilterKey(k => k + 1); }} aria-pressed={value}
+      className="il-pill"
+      style={{
+        borderRadius: 8, padding: "6px 12px", fontSize: 12, cursor: "pointer", display: "flex", alignItems: "center", gap: 5,
+        background: value ? t.tealBg : t.panel,
+        color: value ? t.teal : t.sub,
+        border: `${value ? "2px" : "1px"} solid ${value ? t.teal : t.border}`,
+        fontWeight: value ? 700 : 400,
+      }}>
+      <span aria-hidden="true">{icon}</span> {label}
+    </button>
+  );
 
   return (
     <div>
-      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Insurance lens</h2>
-      <p style={{ fontSize: 13, color: t.sub, marginBottom: 16 }}>Search providers by specialty, language, and accessibility. (Swap in Google Places API + your insurance directory here.)</p>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
-        {SPECIALTIES.map((s) => (
-          <button key={s} onClick={() => setSpecialty(s)} style={{
-            border: "none", borderRadius: 16, padding: "6px 14px", fontSize: 12, cursor: "pointer",
-            background: specialty === s ? t.accentBg : t.panel, color: specialty === s ? t.accent : t.sub, fontWeight: specialty === s ? 600 : 400,
-          }}>{s}</button>
-        ))}
+      <style>{IL_STYLES}</style>
+
+      {/* Back to age gate */}
+      <div className="il-fadein il-d0" style={{ marginBottom: 12 }}>
+        <button onClick={() => setAgeConfirmed(null)} className="il-pill"
+          style={{ background: "none", border: `1px solid ${t.border}`, borderRadius: 8, padding: "5px 12px", fontSize: 12, color: t.sub, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 5 }}>
+          ← Back
+        </button>
       </div>
-      <div style={{ display: "grid", gap: 10 }}>
-        {filtered.map((p) => (
-          <div key={p.name} style={{ background: t.panel, borderRadius: 10, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
-              <div style={{ fontSize: 12, color: t.sub }}>{p.specialty} · {p.distance}</div>
-              <div style={{ fontSize: 11, color: t.mute, marginTop: 4 }}>{p.tags.join(" · ")}</div>
+
+      <h2 className="il-fadein il-d1" style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Insurance Lens</h2>
+      <p className="il-fadein il-d2" style={{ fontSize: 13, color: t.sub, marginBottom: 18 }}>
+        Find providers and resources that match your location, coverage, and accessibility needs — across the entire US market.
+      </p>
+
+      {/* ── Filter panel ── */}
+      <div className="il-fadein il-d3" style={{ background: t.panel, borderRadius: 12, padding: "14px 16px", marginBottom: 20, border: `1px solid ${t.border}` }}>
+
+        {/* Row 1: Location */}
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Location</div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-start" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <label style={{ fontSize: 11, color: t.mute }}>ZIP code</label>
+              <input type="text" inputMode="numeric" placeholder="e.g. 90210" value={zip} onChange={handleZip} maxLength={5}
+                style={{ padding: "7px 10px", borderRadius: 8, border: `1px solid ${zipError ? t.coral : t.border}`, background: t.bg, color: t.ink, fontSize: 13, width: 110 }} />
+              {zipError && <span role="alert" style={{ fontSize: 11, color: t.coral }}>⚠ 5 digits needed</span>}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4, color: t.amber, fontSize: 13 }}>
-              <Star size={13} fill={t.amber} stroke="none" /> {p.rating}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, color: t.mute }}>Community type</label>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {[["all","All areas"],["downtown","Downtown / Urban"],["rural","Rural"]].map(([id, lbl]) =>
+                  pill(lbl, cityType === id, () => applyFilter(setCityType, id))
+                )}
+              </div>
             </div>
           </div>
-        ))}
-        {filtered.length === 0 && <p style={{ fontSize: 13, color: t.mute }}>No providers match that filter yet.</p>}
+        </div>
+
+        {/* Row 2: Specialty + Insurance level */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+          <div style={{ flex: "1 1 180px", display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em" }}>Specialty</label>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {IL_SPECIALTIES.map(s => pill(s, specialty === s, () => applyFilter(setSpecialty, s)))}
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em" }}>Insurance level</label>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {[["all","Any"],["low","Low cost"],["medium","Medium"],["high","Full coverage"]].map(([id, lbl]) =>
+                pill(lbl, insurance === id, () => applyFilter(setInsurance, id))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Row 3: Diversity / Gender / Language */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+          <div style={{ flex: "1 1 140px", display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em" }}>Diversity</label>
+            <select value={diversity} onChange={e => applyFilter(setDiversity, e.target.value)}
+              style={{ padding: "7px 9px", borderRadius: 8, border: `1px solid ${t.border}`, background: t.bg, color: t.ink, fontSize: 12, cursor: "pointer" }}>
+              {[["all","Everyone"],["Black","Black / African American"],["Latino","Hispanic / Latino"],["Indigenous","Indigenous / Native American"],["Asian","Asian / Pacific Islander"],["LGBTQ+","LGBTQ+"]].map(([id, lbl]) =>
+                <option key={id} value={id}>{lbl}</option>
+              )}
+            </select>
+          </div>
+          <div style={{ flex: "1 1 120px", display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em" }}>Gender</label>
+            <select value={gender} onChange={e => applyFilter(setGender, e.target.value)}
+              style={{ padding: "7px 9px", borderRadius: 8, border: `1px solid ${t.border}`, background: t.bg, color: t.ink, fontSize: 12, cursor: "pointer" }}>
+              {[["all","Everyone"],["Female","Female"],["Male","Male"],["Mixed","Non-binary / Mixed"]].map(([id, lbl]) =>
+                <option key={id} value={id}>{lbl}</option>
+              )}
+            </select>
+          </div>
+          <div style={{ flex: "1 1 140px", display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em" }}>Language</label>
+            <select value={language} onChange={e => applyFilter(setLanguage, e.target.value)}
+              style={{ padding: "7px 9px", borderRadius: 8, border: `1px solid ${t.border}`, background: t.bg, color: t.ink, fontSize: 12, cursor: "pointer" }}>
+              {[["all","All languages"],["English","English"],["Spanish","Spanish / Español"],["Mandarin","Mandarin"],["Hindi","Hindi"],["French","French"],["Twi","Twi"],["Yoruba","Yoruba"]].map(([id, lbl]) =>
+                <option key={id} value={id}>{lbl}</option>
+              )}
+            </select>
+          </div>
+        </div>
+
+        {/* Row 4: Accessibility + Provider toggles */}
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Accessibility &amp; Provider</div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {toggle("Elevator", elevator, setElevator, "🛗")}
+            {toggle("Ramp / Step-free", ramp, setRamp, "♿")}
+            {toggle("Transportation help", transport, setTransport, "🚌")}
+            {toggle("ASL interpreter", aslOnly, setAslOnly, "🤟")}
+            {toggle("Phone consult", phoneOnly, setPhoneOnly, "📞")}
+            {toggle("Verified provider", verifiedOnly, setVerifiedOnly, "✓")}
+            {toggle("Nonprofit only", nonprofit, setNonprofit, "●")}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Provider results ── */}
+      <div className="il-slidein il-d3" style={{ fontSize: 12, fontWeight: 700, color: t.sub, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span>Providers {zip && /^\d{5}$/.test(zip) ? `near ${zip}` : ""}</span>
+        <span style={{ fontWeight: 400, fontSize: 11, color: t.mute }}>{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
+      </div>
+
+      <div key={`providers-${filterKey}`} style={{ display: "grid", gap: 10, marginBottom: 28 }}>
+        {filtered.map((p, i) => {
+          const userRating = ratings[p.name];
+          return (
+            <div key={p.name}
+              className={`il-card il-fadein il-d${Math.min(i, 11)}`}
+              style={{ background: t.panel, borderRadius: 12, padding: "14px 16px", border: `1px solid ${t.border}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+                {/* Left: name, specialty, meta */}
+                <div style={{ flex: 1, minWidth: 180 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                    <span style={{ fontWeight: 700, fontSize: 14 }}>{p.name}</span>
+                    {p.verified && (
+                      <span title="Verified provider" style={{ fontSize: 10, background: t.tealBg, color: t.teal, borderRadius: 4, padding: "2px 7px", fontWeight: 700, border: `1px solid ${t.teal}` }}>✓ Verified</span>
+                    )}
+                    {p.nonprofit && (
+                      <span style={{ fontSize: 10, background: t.amberBg, color: t.amber, borderRadius: 4, padding: "2px 7px", fontWeight: 700, border: `1px solid ${t.amber}` }}>● Nonprofit</span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 12, color: t.sub, marginTop: 3 }}>
+                    {p.specialty} · {p.distance}
+                    {p.years && <span style={{ color: t.mute }}> · {p.years} yrs exp.</span>}
+                    {p.gender !== "Mixed" && <span style={{ color: t.mute }}> · {p.gender}</span>}
+                  </div>
+                  {p.awards.length > 0 && (
+                    <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 5 }}>
+                      {p.awards.map(a => (
+                        <span key={a} style={{ fontSize: 10, background: t.pinkBg, color: t.pink, borderRadius: 4, padding: "2px 7px", border: `1px solid ${t.pink}` }}>🏆 {a}</span>
+                      ))}
+                    </div>
+                  )}
+                  {/* Languages + accessibility chips */}
+                  <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 6 }}>
+                    {p.asl && <span style={{ fontSize: 10, background: t.accentBg, color: t.accent, borderRadius: 4, padding: "2px 7px", border: `1px solid ${t.accent}` }}>🤟 ASL</span>}
+                    {p.phone && <span style={{ fontSize: 10, background: t.accentBg, color: t.accent, borderRadius: 4, padding: "2px 7px", border: `1px solid ${t.accent}` }}>📞 Phone</span>}
+                    {p.accessibility.includes("elevator") && <span style={{ fontSize: 10, background: t.panel, color: t.sub, borderRadius: 4, padding: "2px 7px", border: `1px solid ${t.border}` }}>🛗 Elevator</span>}
+                    {p.accessibility.includes("ramp") && <span style={{ fontSize: 10, background: t.panel, color: t.sub, borderRadius: 4, padding: "2px 7px", border: `1px solid ${t.border}` }}>♿ Ramp</span>}
+                    {p.accessibility.includes("transportation") && <span style={{ fontSize: 10, background: t.panel, color: t.sub, borderRadius: 4, padding: "2px 7px", border: `1px solid ${t.border}` }}>🚌 Transport</span>}
+                    {p.languages.filter(l => l !== "English").map(l => (
+                      <span key={l} style={{ fontSize: 10, background: t.panel, color: t.mute, borderRadius: 4, padding: "2px 7px", border: `1px solid ${t.border}` }}>{l}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right: rating + insurance level */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8, flexShrink: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4, color: t.amber, fontSize: 13, fontWeight: 700 }}>
+                    <Star size={13} fill={t.amber} stroke="none" /> {p.rating}
+                  </div>
+                  <div style={{ fontSize: 10, padding: "3px 8px", borderRadius: 6, fontWeight: 600,
+                    background: p.insurance === "low" ? t.tealBg : p.insurance === "medium" ? t.amberBg : t.pinkBg,
+                    color:      p.insurance === "low" ? t.teal   : p.insurance === "medium" ? t.amber   : t.pink,
+                    border: `1px solid ${p.insurance === "low" ? t.teal : p.insurance === "medium" ? t.amber : t.pink}`,
+                  }}>
+                    {p.insurance === "low" ? "Low cost" : p.insurance === "medium" ? "Mid coverage" : "Full coverage"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Rate my provider */}
+              <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${t.border}`, display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 11, color: t.mute }}>Rate this provider:</span>
+                <div style={{ display: "flex", gap: 3 }}>
+                  {[1,2,3,4,5].map(star => (
+                    <button key={star}
+                      onClick={() => { setRatings(r => ({ ...r, [p.name]: star })); setRatedName(p.name); setTimeout(() => setRatedName(""), 350); }}
+                      aria-label={`Rate ${p.name} ${star} star${star !== 1 ? "s" : ""}`}
+                      className="il-star"
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0, lineHeight: 1 }}>
+                      <Star size={15}
+                        fill={userRating && star <= userRating ? t.amber : "none"}
+                        stroke={userRating && star <= userRating ? t.amber : t.border} />
+                    </button>
+                  ))}
+                </div>
+                {userRating && (
+                  <span className={ratedName === p.name ? "il-rated" : ""} style={{ fontSize: 11, color: t.teal }}>✓ Rated {userRating}/5</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div style={{ background: t.panel, borderRadius: 12, padding: "20px 16px", textAlign: "center", color: t.mute, fontSize: 13 }}>
+            No providers match your current filters. Try broadening your search.
+          </div>
+        )}
+      </div>
+
+      {/* ── Resources directory ── */}
+      <div style={{ background: t.panel, borderRadius: 12, border: `1px solid ${t.border}`, overflow: "hidden", marginBottom: 16 }}>
+        <button onClick={() => setShowResources(v => !v)} aria-expanded={showResources}
+          style={{ width: "100%", background: "none", border: "none", padding: "13px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+          <span style={{ fontWeight: 700, fontSize: 13, color: t.ink, display: "flex", alignItems: "center", gap: 7 }}>
+            <span aria-hidden="true" style={{ color: t.accent }}>◈</span>
+            Insurance &amp; Provider Resource Directory
+          </span>
+          <span style={{ color: t.mute, fontSize: 12, transition: "transform 200ms ease-out", transform: showResources ? "rotate(180deg)" : "rotate(0deg)", display: "inline-block" }}>▼</span>
+        </button>
+
+        {showResources && (
+          <div className="il-accordion" style={{ padding: "0 16px 16px" }}>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+              {resCats.map(c => pill(c, resCat === c, () => setResCat(c)))}
+            </div>
+            <div key={`res-${resCat}`} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 10 }}>
+              {filteredRes.map((r, ri) => {
+                const cs = resCatStyle[r.cat] || { bg: "panel", fg: "sub" };
+                return (
+                  <div key={r.link}
+                    className={`il-card il-fadein il-d${Math.min(ri, 11)}`}
+                    style={{ background: t[cs.bg], borderRadius: 10, padding: 14, display: "flex", flexDirection: "column", gap: 6, borderLeft: `3px solid ${t[cs.fg]}` }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <span aria-hidden="true" style={{ fontSize: 9, color: t[cs.fg] }}>{r.icon}</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: t[cs.fg], textTransform: "uppercase", letterSpacing: "0.04em" }}>{r.cat}</span>
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: t.ink }}>{r.title}</div>
+                    <div style={{ fontSize: 12, color: t.sub, lineHeight: 1.6, flex: 1 }}>{r.body}</div>
+                    <a href={r.link} target="_blank" rel="noopener noreferrer"
+                      style={{ fontSize: 12, fontWeight: 600, color: t[cs.fg], textDecoration: "none", marginTop: 2 }}>
+                      Open →
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Data sources ── */}
+      <div style={{ fontSize: 11, color: t.mute, lineHeight: 1.7, paddingTop: 8, borderTop: `1px solid ${t.border}` }}>
+        Data &amp; references: KFF Health Coverage by Gender · NIH/NIMHD Health Data Portal · US Census Bureau P60-288 (2025) ·
+        CDC NCHS FastStats · SHADAC State Health Compare · HRSA Find a Health Center · AMA Physician Finder · CMS Medicare Care Compare.
+        Provider details are illustrative — connect to a live directory API (Google Places, UHC, Cigna) for production use.
       </div>
     </div>
   );
@@ -1667,22 +2398,201 @@ function UrgentTab({ t }) {
 }
 
 // ---------- Learn tab ----------
+// ─── Learn tab animation styles ───────────────────────────────────────────────
+const LT_STYLES = `
+  @keyframes lt-fadein  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes lt-slidein { from { opacity:0; transform:translateX(-8px);  } to { opacity:1; transform:translateX(0); } }
+  @keyframes lt-pop     { 0%{transform:scale(0.95);opacity:0} 60%{transform:scale(1.02)} 100%{transform:scale(1);opacity:1} }
+  @keyframes lt-expand  { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+  .lt-fadein  { animation: lt-fadein  220ms ease-out both; }
+  .lt-slidein { animation: lt-slidein 180ms ease-out both; }
+  .lt-pop     { animation: lt-pop     250ms ease-out both; }
+  .lt-expand  { animation: lt-expand  200ms ease-out both; }
+
+  .lt-d0{animation-delay:0ms}    .lt-d1{animation-delay:40ms}
+  .lt-d2{animation-delay:80ms}   .lt-d3{animation-delay:120ms}
+  .lt-d4{animation-delay:160ms}  .lt-d5{animation-delay:200ms}
+  .lt-d6{animation-delay:240ms}  .lt-d7{animation-delay:280ms}
+  .lt-d8{animation-delay:320ms}  .lt-d9{animation-delay:360ms}
+  .lt-d10{animation-delay:400ms} .lt-d11{animation-delay:440ms}
+
+  .lt-card {
+    transition: transform 190ms ease-out, box-shadow 190ms ease-out, border-color 190ms ease-out;
+    cursor: pointer;
+  }
+  .lt-card:hover  { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.09); }
+  .lt-card:focus  { outline: 3px solid; outline-offset: 2px; }
+
+  .lt-pill {
+    transition: background 150ms ease-out, border-color 150ms ease-out,
+                color 150ms ease-out, transform 130ms ease-out;
+    cursor: pointer;
+  }
+  .lt-pill:hover  { transform: scale(1.05); }
+  .lt-pill:active { transform: scale(0.97); }
+  .lt-pill:focus  { outline: 3px solid; outline-offset: 2px; }
+
+  .lt-step-item {
+    animation: lt-slidein 180ms ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lt-fadein,.lt-slidein,.lt-pop,.lt-expand,
+    .lt-card,.lt-pill,.lt-step-item {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+`;
+
+const LT_CAT_STYLE = {
+  "First Aid":        { bg: "coralBg",   fg: "coral",  icon: "🩹" },
+  "Prevention":       { bg: "tealBg",    fg: "teal",   icon: "🛡️" },
+  "Nutrition":        { bg: "amberBg",   fg: "amber",  icon: "🥗" },
+  "Mental Health":    { bg: "pinkBg",    fg: "pink",   icon: "🧠" },
+  "Know When to Go":  { bg: "accentBg",  fg: "accent", icon: "🚦" },
+};
+
 function LearnTab({ t }) {
-  const [open, setOpen] = useState(null);
+  const [activeCat,  setActiveCat]  = useState("All");
+  const [openIdx,    setOpenIdx]    = useState(null);
+  const [catKey,     setCatKey]     = useState(0);   // re-triggers stagger on category change
+
+  function handleCat(cat) {
+    setActiveCat(cat);
+    setOpenIdx(null);
+    setCatKey(k => k + 1);
+  }
+
+  const visible = activeCat === "All"
+    ? LEARN_GUIDES
+    : LEARN_GUIDES.filter(g => g.cat === activeCat);
+
   return (
     <div>
-      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Learn</h2>
-      <p style={{ fontSize: 13, color: t.sub, marginBottom: 16 }}>How-to guides on symptoms, care basics, and what needs a doctor's visit.</p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
-        {GUIDES.map((g, i) => (
-          <button key={g.title} onClick={() => setOpen(open === i ? null : i)} style={{
-            textAlign: "left", background: t.coralBg, border: "none", borderRadius: 12, padding: 16, cursor: "pointer",
-          }}>
-            <div style={{ fontWeight: 700, fontSize: 13.5, color: t.coral, marginBottom: 6 }}>{g.title}</div>
-            {open === i && <div style={{ fontSize: 12, color: t.sub, lineHeight: 1.5 }}>{g.body}</div>}
-            {open !== i && <div style={{ fontSize: 11.5, color: t.mute }}>Tap to read</div>}
-          </button>
+      <style>{LT_STYLES}</style>
+
+      {/* Header */}
+      <h2 className="lt-fadein lt-d0" style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Learn</h2>
+      <p className="lt-fadein lt-d1" style={{ fontSize: 13, color: t.sub, marginBottom: 18, lineHeight: 1.6 }}>
+        First-aid steps you can do at home, prevention habits, nutrition tips, mental health tools, and how to know when to seek care.
+      </p>
+
+      {/* Stats banner */}
+      <div className="lt-fadein lt-d2" style={{ background: t.amberBg, borderRadius: 12, padding: "12px 16px", marginBottom: 20, border: `1px solid ${t.border}`, display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center" }}>
+        {[
+          { val: "30+", label: "home-care guides" },
+          { val: "7", label: "first-aid topics" },
+          { val: "5", label: "categories" },
+          { val: "CDC / WHO", label: "evidence-based sources" },
+        ].map(s => (
+          <div key={s.label} style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: t.amber, lineHeight: 1 }}>{s.val}</div>
+            <div style={{ fontSize: 11, color: t.sub, marginTop: 2 }}>{s.label}</div>
+          </div>
         ))}
+        <div style={{ marginLeft: "auto", fontSize: 11, color: t.mute, alignSelf: "flex-end" }}>
+          Not a substitute for professional medical advice.
+        </div>
+      </div>
+
+      {/* Category filter pills */}
+      <div className="lt-fadein lt-d3" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }} role="group" aria-label="Filter by category">
+        {LEARN_CATS.map(cat => {
+          const active = activeCat === cat;
+          const cs = LT_CAT_STYLE[cat];
+          return (
+            <button key={cat} onClick={() => handleCat(cat)} aria-pressed={active}
+              className="lt-pill"
+              style={{
+                borderRadius: 20, padding: "6px 15px", fontSize: 12,
+                background: active ? (cs ? t[cs.bg] : t.accentBg) : t.panel,
+                color:      active ? (cs ? t[cs.fg] : t.accent)   : t.sub,
+                fontWeight: active ? 700 : 400,
+                border: `${active ? "2px" : "1px"} solid ${active ? (cs ? t[cs.fg] : t.accent) : t.border}`,
+                display: "flex", alignItems: "center", gap: 5,
+              }}>
+              {cs && <span aria-hidden="true">{cs.icon}</span>}
+              {cat}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Guide cards grid — re-keys on category change to replay stagger */}
+      <div key={`guides-${catKey}`} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+        {visible.map((g, i) => {
+          const cs  = LT_CAT_STYLE[g.cat] || { bg: "panel", fg: "sub" };
+          const isOpen = openIdx === i;
+          return (
+            <div key={g.title}
+              className={`lt-card lt-fadein lt-d${Math.min(i, 11)}`}
+              style={{
+                background: t[cs.bg], borderRadius: 14,
+                border: `${isOpen ? "2px" : "1px"} solid ${isOpen ? t[cs.fg] : t.border}`,
+                overflow: "hidden",
+              }}>
+
+              {/* Card header — tap to open/close */}
+              <button
+                onClick={() => setOpenIdx(isOpen ? null : i)}
+                aria-expanded={isOpen}
+                style={{
+                  width: "100%", background: "none", border: "none", cursor: "pointer",
+                  padding: "14px 16px", textAlign: "left",
+                  display: "flex", alignItems: "flex-start", gap: 12,
+                }}>
+                <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0 }} aria-hidden="true">{g.icon}</span>
+                <div style={{ flex: 1 }}>
+                  {/* Category badge */}
+                  <div style={{ fontSize: 10, fontWeight: 700, color: t[cs.fg], textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
+                    {g.cat}
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: 13.5, color: t.ink, marginBottom: 4 }}>{g.title}</div>
+                  <div style={{ fontSize: 12, color: t.sub, lineHeight: 1.5 }}>{g.summary}</div>
+                </div>
+                {/* Chevron — rotates when open */}
+                <span aria-hidden="true" style={{
+                  fontSize: 11, color: t.mute, flexShrink: 0, marginTop: 4,
+                  display: "inline-block",
+                  transition: "transform 200ms ease-out",
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                }}>▼</span>
+              </button>
+
+              {/* Expanded steps */}
+              {isOpen && (
+                <div className="lt-expand" style={{ padding: "0 16px 16px" }}>
+                  <ol style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8 }}>
+                    {g.steps.map((step, si) => (
+                      <li key={si}
+                        className={`lt-step-item lt-d${Math.min(si, 11)}`}
+                        style={{ fontSize: 12.5, color: t.sub, lineHeight: 1.6 }}>
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
+                  {g.tip && (
+                    <div className="lt-expand" style={{
+                      marginTop: 12, padding: "9px 12px", borderRadius: 8,
+                      background: t.bg, border: `1px solid ${t[cs.fg]}`,
+                      fontSize: 12, color: t[cs.fg], lineHeight: 1.5,
+                    }}>
+                      <strong>💡 Tip: </strong>{g.tip}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer note */}
+      <div className="lt-fadein" style={{ marginTop: 28, fontSize: 11, color: t.mute, lineHeight: 1.7, paddingTop: 10, borderTop: `1px solid ${t.border}` }}>
+        Information sourced from CDC, WHO, American Red Cross, NIH MedlinePlus, and Mayo Clinic guidelines.
+        These guides cover minor home-treatable situations only. When in doubt, use the <strong>Urgent</strong> tab or call your provider.
       </div>
     </div>
   );

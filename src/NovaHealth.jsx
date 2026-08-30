@@ -361,10 +361,10 @@ export default function NovaHealth() {
   const t = THEMES[theme];
 
   return (
-    <div style={{ background: t.bg, color: t.ink, minHeight: "100vh", fontFamily: "system-ui, sans-serif", transition: "background 0.2s, color 0.2s" }}>
+    <div style={{ background: t.bg, color: "#000000", minHeight: "100vh", fontFamily: "system-ui, sans-serif", transition: "background 0.2s, color 0.2s" }}>
       <TopBar t={t} theme={theme} setTheme={setTheme} tab={tab} setTab={setTab} />
       <div style={{ maxWidth: 980, margin: "0 auto", padding: "24px 20px 60px" }}>
-        {tab === "home" && <HomeTab t={t} />}
+        {tab === "home" && <HomeTab t={t} setTab={setTab} />}
         {tab === "insurance" && <InsuranceTab t={t} />}
         {tab === "noinsurance" && <NoInsuranceTab t={t} />}
         {tab === "urgent" && <UrgentTab t={t} />}
@@ -388,7 +388,11 @@ function TopBar({ t, theme, setTheme, tab, setTab }) {
               onClick={() => setTab(tb.id)}
               style={{
                 background: "none", border: "none", cursor: "pointer", fontSize: 13,
-                color: tab === tb.id ? t.accent : t.sub, fontWeight: tab === tb.id ? 700 : 400, padding: 0,
+                color: tab === tb.id ? t.accent : t.sub,
+                fontWeight: tab === tb.id ? 700 : 400,
+                padding: "4px 0",
+                borderBottom: tab === tb.id ? `2px solid ${t.accent}` : "2px solid transparent",
+                transition: "border-color 150ms, color 150ms",
               }}
             >
               {tb.label}
@@ -421,9 +425,17 @@ function ThemeBtn({ active, onClick, icon: Icon, t, label }) {
 }
 
 // ---------- Home / chat tab (real AI call) ----------
-function HomeTab({ t }) {
+const NAV_CARDS = [
+  { id: "insurance",   label: "Insurance lens",  desc: "Find providers by specialty, language & accessibility.",  color: "teal"  },
+  { id: "noinsurance", label: "No insurance",    desc: "Free clinics, Medicaid, and financial aid near you.",     color: "amber" },
+  { id: "urgent",      label: "Urgent help",     desc: "Photo analysis and voice emergency summary tools.",       color: "coral" },
+  { id: "costs",       label: "Manage costs",    desc: "Understand care costs and manage your payment plan.",     color: "pink"  },
+  { id: "learn",       label: "Learn",           desc: "First aid guides, prevention tips, and when to seek care.", color: "accent" },
+];
+
+function HomeTab({ t, setTab }) {
   const [messages, setMessages] = useState([
-    { role: "assistant", text: "Hi, I'm Nova. Tell me what's going on, and I'll help you understand it — not diagnose it, just help you figure out what questions to ask and where to go next." },
+    { role: "assistant", text: "Hi, I'm Nova. Tell me your symptoms or describe what's going on, and I'll help you understand it — not diagnose it, just help you figure out what questions to ask and where to go next." },
   ]);
   const [input,       setInput]       = useState("");
   const [loading,     setLoading]     = useState(false);
@@ -589,6 +601,27 @@ function HomeTab({ t }) {
 
   return (
     <div>
+      {/* Nav cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10, marginBottom: 20 }}>
+        {NAV_CARDS.map(({ id, label, desc, color }) => (
+          <button
+            key={id}
+            onClick={() => setTab(id)}
+            style={{
+              textAlign: "left", cursor: "pointer", border: `1px solid ${t.border}`,
+              borderRadius: 12, padding: "14px 14px 12px",
+              background: t[color + "Bg"] || t.panel,
+              transition: "opacity 150ms",
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
+            onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+          >
+            <div style={{ fontSize: 13.5, fontWeight: 700, color: "#000000", marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 12, color: t.sub, lineHeight: 1.4 }}>{desc}</div>
+          </button>
+        ))}
+      </div>
+
       <div style={{ background: t.amberBg, borderRadius: 12, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: t.amber, display: "flex", alignItems: "center", gap: 8 }}>
         <strong>26.7 million</strong>&nbsp;people are uninsured in the US — the No Insurance tab has clinics, Medicaid, and financial aid resources near you.
       </div>

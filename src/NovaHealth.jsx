@@ -171,40 +171,106 @@ function HomeTab({ t }) {
 
   useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
+  // async function send() {
+  //   // Strip interim marker before sending
+  //   const text = input.replace(/\u200B.*$/, "").trim();
+  //   if (!text || loading) return;
+  //   if (listening) { recognitionRef.current?.stop(); setListening(false); }
+  //   const userMsg = { role: "user", text };
+  //   const next = [...messages, userMsg];
+  //   setMessages(next);
+  //   setInput("");
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch("http://localhost:5001/api/chat", {
+  //     //fetch("https://api.anthropic.com/v1/messages", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         model: "claude-sonnet-4-6",
+  //         max_tokens: 400,
+  //         system:
+  //           "You are Nova, a warm, plain-language health information companion inside an app for people who may not have insurance. " +
+  //           "You are NOT a doctor and must never diagnose or prescribe. Help the person understand possible explanations for a symptom in general terms, " +
+  //           "suggest what to watch for, and always end by suggesting whether this sounds like something to monitor, something for a routine visit, " +
+  //           "or something urgent. Keep responses under 120 words, conversational, no medical jargon without explaining it.",
+  //         messages: next.map((m) => ({ role: m.role, content: m.text })),
+  //       }),
+  //     });
+  //     const data = await res.json();
+  //     const text2 = data?.content?.find((c) => c.type === "text")?.text || "Sorry, I couldn't process that just now.";
+  //     setMessages((cur) => [...cur, { role: "assistant", text: text2 }]);
+  //   } catch {
+  //     setMessages((cur) => [...cur, { role: "assistant", text: "Something went wrong reaching Nova. Please try again." }]);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
   async function send() {
-    // Strip interim marker before sending
-    const text = input.replace(/\u200B.*$/, "").trim();
-    if (!text || loading) return;
-    if (listening) { recognitionRef.current?.stop(); setListening(false); }
-    const userMsg = { role: "user", text };
-    const next = [...messages, userMsg];
-    setMessages(next);
-    setInput("");
-    setLoading(true);
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 400,
-          system:
-            "You are Nova, a warm, plain-language health information companion inside an app for people who may not have insurance. " +
-            "You are NOT a doctor and must never diagnose or prescribe. Help the person understand possible explanations for a symptom in general terms, " +
-            "suggest what to watch for, and always end by suggesting whether this sounds like something to monitor, something for a routine visit, " +
-            "or something urgent. Keep responses under 120 words, conversational, no medical jargon without explaining it.",
-          messages: next.map((m) => ({ role: m.role, content: m.text })),
-        }),
-      });
-      const data = await res.json();
-      const text2 = data?.content?.find((c) => c.type === "text")?.text || "Sorry, I couldn't process that just now.";
-      setMessages((cur) => [...cur, { role: "assistant", text: text2 }]);
-    } catch {
-      setMessages((cur) => [...cur, { role: "assistant", text: "Something went wrong reaching Nova. Please try again." }]);
-    } finally {
-      setLoading(false);
-    }
+  const text = input.replace(/\u200B.*$/, "").trim();
+
+  if (!text || loading) return;
+
+  if (listening) {
+    recognitionRef.current?.stop();
+    setListening(false);
   }
+
+  const userMsg = {
+    role: "user",
+    text,
+  };
+
+  const next = [...messages, userMsg];
+
+  setMessages(next);
+  setInput("");
+  setLoading(true);
+
+  try {
+    const response = await fetch("http://localhost:5001/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: "symptoms",
+        messages: next.map((message) => ({
+          role: message.role,
+          content: message.text,
+        })),
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Nova could not respond.");
+    }
+
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        role: "assistant",
+        text: data.message,
+      },
+    ]);
+  } catch (error) {
+    console.error("Nova frontend error:", error);
+
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        role: "assistant",
+        text:
+          error.message ||
+          "Something went wrong reaching Nova. Please try again.",
+      },
+    ]);
+  } finally {
+    setLoading(false);
+  }
+}
 
   // Displayed value: render interim portion (after \u200B) in muted italic via a layered approach.
   // Since <input> can't style substrings, we split into committed + interim for the placeholder hint.

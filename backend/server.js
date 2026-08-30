@@ -107,7 +107,7 @@ End with a practical next step.
 function validateEnvironment() {
   const requiredVariables = [
     "WATSONX_API_KEY",
-    "WATSONX_PROJECT_ID",
+    "WATSONX_SPACE_ID",
     "WATSONX_URL",
     "WATSONX_MODEL_ID",
   ];
@@ -187,7 +187,7 @@ async function sendMessageToWatsonx({ mode, messages }) {
     },
     body: JSON.stringify({
       model_id: process.env.WATSONX_MODEL_ID,
-      project_id: process.env.WATSONX_PROJECT_ID,
+      space_id: process.env.WATSONX_SPACE_ID,
       messages: [
         {
           role: "system",
@@ -221,7 +221,7 @@ async function sendMessageToWatsonx({ mode, messages }) {
   return assistantMessage;
 }
 
-// Test route
+// Health-check route
 app.get("/api/health", (request, response) => {
   response.json({
     status: "ok",
